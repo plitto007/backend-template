@@ -7,9 +7,9 @@ USER root
 ## RUN luarocks install kong-plugin-http-to-https-redirect
 #RUN luarocks install https://github.com/binhbt/kong-plugin-jwt-claims-headers/raw/master/kong-plugin-jwt-claims-headers-1.0-2.all.rock
 #RUN  luarocks install https://github.com/binhbt/kong-http-to-https-redirect/raw/master/kong-plugin-http-to-https-redirect-1.0-0.all.rock
-
-USER kong
 COPY kong/custom-plugins /custom-plugins
+RUN  luarocks install /custom-plugins/kong-jwt2header-1.0-3.all.rock
+USER kong
 
 COPY kong/kong.conf.default /etc/kong/kong.conf
 RUN mkdir -p /tmp
