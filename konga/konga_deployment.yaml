@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga-prepare
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga-prepare
+  template:
+    metadata:
+      labels:
+        name: konga-prepare
+        app: konga-prepare
+    spec:
+      containers:
+        - name: konga-prepare
+          image: pantsel/konga
+          env:
+            - name: DB_ADAPTER
+              value: postgres
+            - name: DB_HOST
+              value: postgres
+            - name: DB_USER
+              value: kong
+            - name: DB_PASSWORD
+              value: kong
+            - name: DB_DATABASE
+              value: konga
+            - name: DB_PORT
+              value: "5432"
+            - name: KONGA_HOOK_TIMEOUT
+              value: "120000"
+            - name: NODE_ENV
+              value: production
+            - name: TOKEN_SECRET
+              value: some_secret_token
+#          command: [ "/bin/sh", "-c", "node ./bin/konga.js prepare -a postgres --uri postgresql://kong:kong@postgres:5432/konga?host=postgres&port=5432&user=kong&password=kong" ]
+
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: konga
+  namespace: kong
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: konga
+  template:
+    metadata:
+      labels:
+        name: konga
+        app: konga
+    spec:
+      containers:
+        - name: konga
+          image: pantsel/konga
+          env:
+            - name: DB_ADAPTER
+              value: postgres
+            - name: DB_HOST
+              value: postgres1
+            - name: DB_URI
+              value: postgresql://kong:kong@postgres:5432/konga
+              #valueFrom:
+              #  secretKeyRef:
+              #    name: kongcreds
+              #    key: postgresdbname
+            - name: DB_USER
+              value: postgres
+            - name: DB_PASSWORD
+              value: kong
+            - name: DB_DATABASE
+              value: konga
+            - name: DB_PORT
+              value: "5432"
+            - name: KONGA_HOOK_TIMEOUT
+              value: "120000"
+            - name: NODE_ENV
+              value: production
+            - name: TOKEN_SECRET
+              value: some_secret_token
+          ports:
+            - containerPort: 1337
+              protocol: TCP
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: konga
+  name: konga-svc
+  namespace: kong
+spec:
+  ports:
+    - protocol: TCP
+      port: 1337
+      targetPort: 1337
+  selector:
+    app: konga
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  annotations:
+#    kubernetes.io/ingress.class: nginx
+    konghq.com/strip-path: "true"
+#    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+  name: konga
+  namespace: kong
+spec:
+  ingressClassName: kong
+  rules:
+    - http:
+        paths:
+          - backend:
+              service:
+                name: konga-svc
+                port:
+                  number: 1337
+            path: /konga
+            pathType: ImplementationSpecific
+#  tls:
+#    - hosts:
+#        - konga.mydomain.com
+#      secretName: konga-mydomain-tls
+
