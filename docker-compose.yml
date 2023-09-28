@@ -2,7 +2,7 @@ version: "3.3"
 
 services:
   kong:
-    image: mvp-kong:1.0
+    image: mvp-k8s/kong:1.0
     build:
       context: .
       dockerfile: kong/Dockerfile
