@@ -1,6 +1,6 @@
 FROM kong:3.4.0-ubuntu
 #ENV KONG_PLUGINS bundled, jwt-claims-headers, http-to-https-redirect
-ENV KONG_PLUGINS bundled, jwt-to-header
+ENV KONG_PLUGINS bundled, kong-jwt2header
 USER root
 
 #RUN luarocks install kong-plugin-jwt-claims-to-headers
