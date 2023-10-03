@@ -10,6 +10,7 @@ ARG KAFKA_ELASTICSEARCH_VERSION=5.3.2
 USER root
 RUN mkdir -p /opt/kafka
 COPY debezium/connect/kafka_connect_run.sh /opt/kafka/
+RUN chmod +x  /opt/kafka/kafka_connect_run.sh
 #COPY debezium/connectors /kafka/
 # Deploy PostgreSQL JDBC Driver
 
