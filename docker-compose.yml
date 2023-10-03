@@ -7,3 +7,9 @@ services:
       context: .
       dockerfile: kong/Dockerfile
     hostname: kong
+  connect:
+    image:
+      mvp-k8s/connect:1.0
+    build:
+      context: .
+      dockerfile: debezium/connect/Dockerfile
