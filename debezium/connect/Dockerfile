@@ -7,9 +7,12 @@ ENV KAFKA_CONNECT_JDBC_DIR=$KAFKA_CONNECT_PLUGINS_DIR/kafka-connect-jdbc \
 ARG POSTGRES_VERSION=42.2.8
 ARG KAFKA_JDBC_VERSION=5.3.2
 ARG KAFKA_ELASTICSEARCH_VERSION=5.3.2
-
+USER root
+RUN mkdir -p /opt/kafka
+COPY debezium/connect/kafka_connect_run.sh /opt/kafka/
 #COPY debezium/connectors /kafka/
 # Deploy PostgreSQL JDBC Driver
+
 RUN cd /kafka/libs && curl -sO https://jdbc.postgresql.org/download/postgresql-$POSTGRES_VERSION.jar
 
 # Deploy Kafka Connect JDBC
