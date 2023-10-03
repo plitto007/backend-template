@@ -1,5 +1,4 @@
-FROM debezium/connect:2.0.0.Final
-
+FROM strimzi/kafka-connect:0.11.4-kafka-2.1.0
 
 ENV KAFKA_CONNECT_JDBC_DIR=$KAFKA_CONNECT_PLUGINS_DIR/kafka-connect-jdbc \
     KAFKA_CONNECT_ES_DIR=$KAFKA_CONNECT_PLUGINS_DIR/kafka-connect-elasticsearch
@@ -7,10 +6,10 @@ ENV KAFKA_CONNECT_JDBC_DIR=$KAFKA_CONNECT_PLUGINS_DIR/kafka-connect-jdbc \
 ARG POSTGRES_VERSION=42.2.8
 ARG KAFKA_JDBC_VERSION=5.3.2
 ARG KAFKA_ELASTICSEARCH_VERSION=5.3.2
-USER root
-RUN mkdir -p /opt/kafka
-COPY debezium/connect/kafka_connect_run.sh /opt/kafka/
-RUN chmod +x  /opt/kafka/kafka_connect_run.sh
+#USER root
+#RUN mkdir -p /opt/kafka
+#COPY debezium/connect/kafka_connect_run.sh /opt/kafka/
+#RUN chmod +x  /opt/kafka/kafka_connect_run.sh
 #COPY debezium/connectors /kafka/
 # Deploy PostgreSQL JDBC Driver
 
